@@ -1,0 +1,172 @@
+#N canvas 234 127 783 512 10;
+#X obj 57 116 readsf~;
+#N canvas 697 34 953 758 commands 0;
+#X obj 48 690 outlet;
+#X obj 91 100 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 238 444 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 218 383 manual-trig bang;
+#X text 117 98 Turn on buffering first or you won't hear anything;
+#X msg 238 464 auto-trig-switch \$1;
+#X text 443 444 Or \, turn auto-trigger on to keep generating new streams
+continuously;
+#X text 411 382 Manually trigger a new stream (polyphonic up to 20
+voices);
+#X text 362 155 Transposition range in 100ths of a semitone (cents)
+;
+#X msg 91 120 buffer-rec-switch \$1;
+#X text 501 36 Internal defaults;
+#X text 363 213 Playback amplitude from 0-100dB;
+#X msg 288 624 clear-buffers bang;
+#X text 498 624 Clear the internal buffers immediately;
+#X text 441 487 Set the probability in percent of auto-triggering a
+new stream on every auto-trig tick that goes by.;
+#X text 454 534 Set the time between auto-trig ticks;
+#X text 464 558 Set the FFT analysis window size (overlap of 4 is hard-coded)
+;
+#X text 386 351 Gap between record threads \, in ms;
+#X text 488 594 Change the buffer length (ms);
+#X msg 278 594 buffer-len 5000;
+#X text 382 268 Use -1 -1 as the range to make a thread play the entire
+buffer;
+#X text 362 183 Playback speed from 1-100%;
+#X msg 208 353 record-rate 250;
+#X text 402 243 Playback duration (ms) of each stream;
+#X text 432 318 Set attack and release time ranges for amplitude envelopes
+;
+#X text 508 654 Kill all playback streams immediately;
+#X msg 298 654 kill-all-streams bang;
+#X msg 258 534 auto-trig-rate 1000;
+#X msg 248 494 auto-trig-prob 70;
+#X msg 168 273 duration-range -1 -1;
+#X msg 148 213 amp-range 100 100;
+#X msg 138 183 speed-range 90 99;
+#X msg 128 154 transpo-range -50 50;
+#X msg 178 303 attack-time-range 10 100;
+#X msg 188 322 release-time-range 500 1000;
+#X msg 49 13 buffer-rec-switch 0 \, auto-trig-switch 0 \, window-size
+2048 \, auto-trig-rate 500 \, auto-trig-prob 70 \, speed-range 50 90
+\, transpo-range 0 0 \, amp-range 90 100 \, duration-range 2000 4000
+\, attack-time-range 50 100 \, release-time-range 50 100 \, record-rate
+500 \, buffer-len 4000;
+#X text 621 694 Discontinued: "chord" method creates an N-voiced chord
+with N groups of [transpo \, speed \, amplitude \, duration] arguments
+, f 49;
+#X connect 1 0 9 0;
+#X connect 2 0 5 0;
+#X connect 3 0 0 0;
+#X connect 5 0 0 0;
+#X connect 9 0 0 0;
+#X connect 12 0 0 0;
+#X connect 19 0 0 0;
+#X connect 22 0 0 0;
+#X connect 26 0 0 0;
+#X connect 27 0 0 0;
+#X connect 28 0 0 0;
+#X connect 29 0 0 0;
+#X connect 30 0 0 0;
+#X connect 31 0 0 0;
+#X connect 32 0 0 0;
+#X connect 33 0 0 0;
+#X connect 34 0 0 0;
+#X connect 35 0 0 0;
+#X restore 253 178 pd commands;
+#X msg 97 73 stop;
+#X text 305 118 NOTE: Stream polyphony is currently hard-coded to 20
+voices;
+#X msg 57 33 open ./audio/satie.wav \, start;
+#X text 523 456 William Brent \, March 2018;
+#X text 523 436 [streamStretch~] version 0.5.2;
+#N canvas 4 23 592 473 output 0;
+#X obj 370 277 *~;
+#X obj 362 306 dac~;
+#X floatatom 110 118 5 0 148 1 dB - -, f 5;
+#X obj 380 195 dbtorms;
+#X obj 380 217 pack f 40;
+#X obj 380 239 line~;
+#X obj 306 126 inlet~;
+#X connect 0 0 1 0;
+#X connect 0 0 1 1;
+#X connect 2 0 3 0;
+#X connect 3 0 4 0;
+#X connect 4 0 5 0;
+#X connect 5 0 0 1;
+#X connect 6 0 0 0;
+#X coords 0 -1 1 1 100 40 1 100 100;
+#X restore 57 391 pd output;
+#X text 305 48 [streamStretch~] buffers multiple copies of incoming
+live audio and creates overlapping streams of time-stretched & transposed
+output that trail the input. It is a Pd-vanilla abstraction.;
+#X text 347 178 << See commands inside to turn on buffering and activate
+streams, f 34;
+#N canvas 640 292 647 503 presets 0;
+#X obj 64 14 inlet;
+#X obj 64 469 outlet;
+#N canvas 1078 25 473 353 preset-label 0;
+#X obj 62 14 inlet;
+#X obj 62 35 list append \$0;
+#X msg 98 233 \; \$1-preset-label label Detuned-trails \;;
+#X msg 62 273 \; \$1-preset-label label Smooth-lag \;;
+#X msg 128 193 \; \$1-preset-label label Granular-nonsense \;;
+#X msg 158 153 \; \$1-preset-label label Painful-death \;;
+#X obj 62 80 route 0 1 2 3 4;
+#X msg 188 113 \; \$1-preset-label label Buffering-off \;;
+#X connect 0 0 1 0;
+#X connect 1 0 6 0;
+#X connect 6 0 3 0;
+#X connect 6 1 2 0;
+#X connect 6 2 4 0;
+#X connect 6 3 5 0;
+#X connect 6 4 7 0;
+#X restore 223 63 pd preset-label;
+#X msg 151 252 buffer-rec-switch 1 \, transpo-range -1200 3600 \, speed-range
+70 95 \, amp-range 80 100 \, duration-range 50 250 \, attack-time-range
+5 5 \, release-time-range 5 5 \, record-rate 10 \, auto-trig-prob 100
+\, auto-trig-rate 5 \, auto-trig-switch 1;
+#X msg 64 106 buffer-rec-switch 1 \, transpo-range 0 0 \, speed-range
+30 70 \, amp-range 94 100 \, duration-range -1 -1 \, attack-time-range
+500 1000 \, release-time-range 1000 5000 \, record-rate 250 \, auto-trig-prob
+90 \, auto-trig-rate 500 \, auto-trig-switch 1;
+#X msg 100 183 buffer-rec-switch 1 \, transpo-range -35 35 \, speed-range
+95 99 \, amp-range 90 100 \, duration-range -1 -1 attack-time-range
+5 50 \, release-time-range 1000 2000 \, record-rate 50 \, auto-trig-rate
+100 \, auto-trig-prob 80 \, auto-trig-switch 1;
+#X obj 64 56 select 0 1 2 3 4;
+#X msg 230 401 buffer-rec-switch 0 \, auto-trig-switch 0;
+#X msg 200 321 buffer-rec-switch 1 \, transpo-range -1200 2400 \, speed-range
+30 95 \, amp-range 94 100 \, duration-range -1 -1 \, attack-time-range
+5 1000 \, release-time-range 5 5000 \, record-rate 10 \, auto-trig-prob
+100 \, auto-trig-rate 5 \, auto-trig-switch 1;
+#X connect 0 0 2 0;
+#X connect 0 0 6 0;
+#X connect 3 0 1 0;
+#X connect 4 0 1 0;
+#X connect 5 0 1 0;
+#X connect 6 0 4 0;
+#X connect 6 1 5 0;
+#X connect 6 2 3 0;
+#X connect 6 3 8 0;
+#X connect 6 4 7 0;
+#X connect 7 0 1 0;
+#X connect 8 0 1 0;
+#X restore 299 236 pd presets;
+#X obj 299 216 hradio 15 1 0 5 empty empty empty 0 -8 0 10 -262144
+-1 -1 4;
+#X text 398 215 <<<< Try a few presets;
+#X obj 380 236 cnv 15 100 20 empty \$0-preset-label Buffering-off 20
+12 0 14 -262144 -66577 0;
+#X obj 124 289 cnv 15 150 60 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 137 311 streamStretch~;
+#X obj 57 357 +~;
+#X connect 0 0 15 0;
+#X connect 0 0 16 0;
+#X connect 0 1 4 0;
+#X connect 1 0 15 1;
+#X connect 2 0 0 0;
+#X connect 4 0 0 0;
+#X connect 10 0 15 1;
+#X connect 11 0 10 0;
+#X connect 15 0 16 1;
+#X connect 16 0 7 0;
